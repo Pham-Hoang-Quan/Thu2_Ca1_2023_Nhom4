@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <button onclick="start()">start</button>
+</body>
+</html>
+<script>
+    // 1. Người chơi nhấn nút "Start"
+    function start() {  
+    // 2.1. Hệ thống vẽ rắn
+    let player = new Snake();
+    player.draw()
+    // 2.2. Hệ thống vẽ thức ăn
+    let food = new Food()
+    food.spawn()
+    //2.3. Hệ thống vẽ tường
+    let wall1 = new Wall(0, 0, GAME_WIDTH, UNIT);
+    let wall2 = new Wall(0, GAME_WIDTH - UNIT, GAME_WIDTH, UNIT);
+    let wall3 = new Wall(0, 0, UNIT, GAME_WIDTH);
+    let wall4 = new Wall(GAME_WIDTH - UNIT, 0, UNIT, GAME_WIDTH)
+    wall1.draw();
+    wall2.draw();
+    wall3.draw();
+    wall4.draw();
+    // 2.4 Hệ thống hiển thị các thành phần của trò chơi
+    setInterval(() => {
+    player.move()
+    // 5. Kiểm tra va chạm với tường và chính nó
+    if (player.checkCollision()) {
+        alert("Game over!");// 5.1. Hiển thị thông báo thua
+        window.location.reload();
+        return;
+    }
+    // 4. Kiểm tra va chạm với thức ăn
+    if (player.checkEat(food)) {
+        player.grow();//4.1 Tăng chiều dài rắn
+        food.spawn();// 4.2 Xóa thức ăn cũ tạo thức ăn mới
+    }
+        }, 150);
+    }
+    // 3. Người chơi điều khiên rắn
+    document.onkeydown = function(e) {
+        //3.1. Hệ thống xác định phím(hướng) người chơi bấm
+    switch (e.keyCode){
+        case LEFT:
+            if (currentDirection.x === 1) break 
+            // 3.2. Rẻ hướng rắn
+            player.speed = new Vector2d(-1, 0)
+            currentDirection = new Vector2d(-1, 0);
+            break;
+        case RIGHT:
+            if (currentDirection.x === -1) break 
+            player.speed = new Vector2d(1, 0)
+            currentDirection = new Vector2d(1, 0);
+            break;
+        case UP:
+            if (currentDirection.y === 1) break 
+            player.speed = new Vector2d(0, -1)
+            currentDirection = new Vector2d(0, -1);
+            break;
+        case DOWN:
+            if (currentDirection.y === -1) break 
+            player.speed = new Vector2d(0, 1)
+            currentDirection = new Vector2d(0, 1);
+            break;
+
+        default:
+            break;
+    }
+}
+
+</script>
